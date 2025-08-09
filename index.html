@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>세계 국기 맞추기 퀴즈 – 실행 런처</title>
+
+  <!-- iOS / PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+
+  <!-- OG/Kakao -->
+  <meta property="og:title" content="세계 국기 맞추기 퀴즈">
+  <meta property="og:description" content="100/193개국 모바일·웹 버전, 오프라인 캐시 지원">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="./icons/icon-512.png">
+
+  <style>
+    :root{--bg:#fff;--fg:#111827;--muted:#6b7280;--brand:#03C75A}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+    html,body{height:100%}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',Arial,sans-serif;background:var(--bg);color:var(--fg)}
+    .wrap{max-width:720px;margin:0 auto;padding:24px 16px 80px}
+    h1{font-size:26px;margin:10px 0 6px}
+    p.sub{color:var(--muted);margin:0 0 20px}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{border:1px solid #e5e7eb;border-radius:16px;padding:14px;text-align:center;cursor:pointer;text-decoration:none;color:inherit}
+    .card b{display:block;margin-bottom:6px}
+    .badge{display:inline-block;font-size:12px;border:1px solid var(--brand);color:var(--brand);border-radius:999px;padding:2px 8px;margin-left:6px}
+    .notice{margin:16px 0;padding:12px;border:1px dashed #cbd5e1;border-radius:12px;color:#475569;background:#f8fafc}
+    .sticky{position:fixed;inset:auto 0 0 0;background:#fff;border-top:1px solid #e5e7eb;padding:12px 16px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #111827;background:#fff}
+    .muted{color:#6b7280;font-size:13px}
+    .hidden{display:none!important}
+    .tip-list{margin:8px 0 0 18px;padding:0}.tip-list li{margin:6px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>세계 국기 맞추기 퀴즈 <span class="badge">PWA</span></h1>
+    <p class="sub">모바일/웹 어디서든 실행. 카카오톡·인스타 인앱 감지, 오프라인 캐시 지원.</p>
+
+    <div id="warning" class="notice hidden" role="status" aria-live="polite"></div>
+
+    <div class="grid" style="margin-top:12px" aria-label="버전 선택">
+      <a class="card" href="./apps/mobile-100.html"><b>모바일 100</b><span class="muted">휴대폰 최적화</span></a>
+      <a class="card" href="./apps/web-100.html"><b>웹 100</b><span class="muted">PC·태블릿</span></a>
+      <a class="card" href="./apps/mobile-193.html"><b>모바일 193</b><span class="muted">휴대폰 최적화</span></a>
+      <a class="card" href="./apps/web-193.html"><b>웹 193</b><span class="muted">PC·태블릿</span></a>
+    </div>
+
+    <div style="margin-top:18px">
+      <button id="installBtn" class="btn hidden">홈 화면에 추가</button>
+      <span class="muted" id="installHint"></span>
+    </div>
+
+    <div style="margin-top:18px;font-size:12px;color:#6b7280;">© 2025 밝음의근원 · MIT 라이선스 구성 요소 포함</div>
+  </div>
+
+  <div class="sticky"><span class="muted">공유 링크 하나로 끝. 인앱 브라우저에서도 안내 후 실행됩니다.</span></div>
+
+<script>
+  // Service Worker 등록
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    });
+  }
+
+  // 인앱 브라우저 감지 → 안내
+  const ua = navigator.userAgent || "";
+  const isIOS=/iP(hone|ad|od)/.test(ua), isAndroid=/Android/i.test(ua);
+  const isKakao=/KAKAOTALK/i.test(ua);
+  const isInApp=/(KAKAOTALK|FBIOS|FBAN|FBAV|Instagram|Line|NAVER|Whale|DaumApps)/i.test(ua);
+  const warning=document.getElementById("warning");
+  if (isInApp){
+    const lines=[];
+    if (isIOS){ lines.push("현재 인앱 브라우저입니다. 오른쪽 상단 <b>⋯</b> → <u>Safari로 열기</u>를 눌러주세요."); }
+    else if (isAndroid){ lines.push("현재 인앱 브라우저입니다. 메뉴(⋮) → <u>기본 브라우저로 열기</u>를 선택하세요."); }
+    if (isKakao){ lines.push("카카오톡: 우측 상단 <b>⋯</b> → <u>다른 브라우저로 열기</u> 선택"); }
+    warning.innerHTML = lines.map(x=>`<div>${x}</div>`).join("") +
+      '<ul class="tip-list"><li>홈 화면에 추가(PWA)하면 다음부터 즉시 실행됩니다.</li></ul>';
+    warning.classList.remove("hidden");
+  }
+
+  // PWA 설치 유도
+  let deferredPrompt=null;
+  const btn=document.getElementById("installBtn"), hint=document.getElementById("installHint");
+  window.addEventListener("beforeinstallprompt",(e)=>{
+    e.preventDefault(); deferredPrompt=e; btn.classList.remove("hidden"); hint.textContent="설치하면 전체 화면 + 오프라인 실행";
+  });
+  btn?.addEventListener("click", async ()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const choice=await deferredPrompt.userChoice;
+    deferredPrompt=null; btn.classList.add("hidden");
+    if(choice && choice.outcome==="accepted"){ hint.textContent="설치됨. 홈 화면에서 실행하세요."; }
+  });
+</script>
+</body>
+</html>
