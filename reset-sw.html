@@ -1,0 +1,19 @@
+<!DOCTYPE html><meta charset="utf-8">
+<title>Reset SW</title>
+<script>
+(async () => {
+  try {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) await r.unregister();
+    }
+    const keys = await caches.keys();
+    for (const k of keys) await caches.delete(k);
+    localStorage.clear(); sessionStorage.clear();
+  } catch (e) {}
+  location.href = "./index.html?v=5&reset=1";
+})();
+</script>
+<body style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans KR,Arial,sans-serif;padding:20px">
+  캐시 초기화 중...
+</body>
