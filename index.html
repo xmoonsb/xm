@@ -7,11 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="./manifest.webmanifest">
-  <meta property="og:title" content="세계 국기 맞추기 퀴즈">
-  <meta property="og:description" content="">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://xmoonsb.github.io/xm/">
-  <meta property="og:image" content="https://xmoonsb.github.io/xm/icons/icon-512.png">
   <style>
     :root{--bg:#fff;--fg:#111827;--muted:#6b7280;--brand:#03C75A}
     *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
@@ -31,16 +26,17 @@
     <h1>세계 국기 맞추기 퀴즈 <span class="badge">PWA</span></h1>
 
     <div class="grid" aria-label="버전 선택">
-      <a class="card" href="https://xmoonsb.github.io/xm/apps/mobile-100.html?v=5">
+      <!-- 루트에 있는 파일로 연결 + 캐시버스터 v=6 -->
+      <a class="card" href="https://xmoonsb.github.io/xm/mobile-100.html?v=6">
         <b>모바일 국기100문제</b><span class="muted">휴대폰 최적화</span>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/apps/web-100.html?v=5">
+      <a class="card" href="https://xmoonsb.github.io/xm/web-100.html?v=6">
         <b>웹 국기100문제</b><span class="muted">PC·태블릿</span>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/apps/mobile-193.html?v=5">
+      <a class="card" href="https://xmoonsb.github.io/xm/mobile-193.html?v=6">
         <b>모바일 국기193문제</b><span class="muted">휴대폰 최적화</span>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/apps/web-193.html?v=5">
+      <a class="card" href="https://xmoonsb.github.io/xm/web-193.html?v=6">
         <b>웹 국기193문제</b><span class="muted">PC·태블릿</span>
       </a>
     </div>
@@ -51,7 +47,7 @@
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js?v=5").catch(() => {});
+      navigator.serviceWorker.register("./service-worker.js?v=6").catch(() => {});
     });
   }
 </script>
