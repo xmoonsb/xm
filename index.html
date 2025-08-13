@@ -3,53 +3,102 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>세계 국기 맞추기 퀴즈 – 실행 런처</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="manifest" href="./manifest.webmanifest">
+  <title>세계 국기 맞추기 퀴즈 – 시작하기</title>
+  <meta name="theme-color" content="#fbbf24" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#fff;--fg:#111827;--muted:#6b7280;--brand:#03C75A}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+    :root{
+      --bg1:#f0f9ff; --bg2:#ffffff;
+      --text:#0f172a; --muted:#64748b;
+      --brand:#03C75A; --accent:#fbbf24;
+      --card:#ffffff; --border:#dbeafe;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
     html,body{height:100%}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',Arial,sans-serif;background:#fff;color:#111827}
-    .wrap{max-width:720px;margin:0 auto;padding:24px 16px 40px}
-    h1{font-size:26px;margin:10px 0 6px}
-    .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}
-    .card{border:1px solid #e5e7eb;border-radius:16px;padding:14px;text-align:center;cursor:pointer;text-decoration:none;color:inherit}
-    .card b{display:block;margin-bottom:6px}
-    .badge{display:inline-block;font-size:12px;border:1px solid var(--brand);color:var(--brand);border-radius:999px;padding:2px 8px;margin-left:6px}
-    .muted{color:#6b7280;font-size:13px}
+    body{
+      margin:0; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 60%);
+      color:var(--text); font-family:"Jua","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      letter-spacing:.2px; text-align:center;
+      padding:24px 16px;
+    }
+    .wrap{width:100%; max-width:820px}
+    h1{
+      margin:4px 0 16px; font-size:clamp(28px,7vw,44px);
+      color:var(--accent); text-shadow:0 1px 0 rgba(255,255,255,.85);
+    }
+    .subtitle{color:var(--muted); font-size:clamp(14px,3.6vw,16px); margin-bottom:14px}
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      justify-items:center; align-items:stretch;
+    }
+    @media (max-width:520px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      width:100%; max-width:360px; padding:18px 16px;
+      border-radius:20px; border:3px solid var(--border); background:var(--card);
+      box-shadow:var(--shadow);
+      text-decoration:none; color:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px;
+      transition:transform .08s ease, box-shadow .12s ease;
+    }
+    .card:active{ transform:scale(.98) }
+    .card b{ font-size:clamp(18px,4.6vw,22px) }
+    .card small{ color:var(--muted); font-size:clamp(12px,3.4vw,14px) }
+
+    .globe{
+      width:54px; height:54px; border-radius:50%;
+      background:var(--brand); display:grid; place-items:center; margin-bottom:6px;
+      box-shadow:0 6px 16px rgba(3,199,90,.35);
+    }
+    .globe svg{ width:70%; height:70% }
+    footer{ margin-top:16px; color:#94a3b8; font-size:12px }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>세계 국기 맞추기 퀴즈 <span class="badge">PWA</span></h1>
+  <div class="wrap" role="main">
+    <h1>세계 국기 맞추기 퀴즈</h1>
+    <div class="subtitle">원하는 버전을 눌러 바로 시작!</div>
 
     <div class="grid" aria-label="버전 선택">
-      <!-- 루트에 있는 파일로 연결 + 캐시버스터 v=6 -->
-      <a class="card" href="https://xmoonsb.github.io/xm/mobile-100.html?v=6">
-        <b>모바일 국기100문제</b><span class="muted">휴대폰 최적화</span>
+      <a class="card" href="./flags-100-mobile.html?v=7">
+        <span class="globe" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="1.2" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="7.8" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="16.2" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="1.2" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="7.8" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="16.2" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/></svg>
+        </span>
+        <b>모바일 국기100문제</b>
+        <small>휴대폰 최적화</small>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/web-100.html?v=6">
-        <b>웹 국기100문제</b><span class="muted">PC·태블릿</span>
+
+      <a class="card" href="./flags-100-web.html?v=7">
+        <span class="globe" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="1.2" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="7.8" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="16.2" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="1.2" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="7.8" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="16.2" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/></svg>
+        </span>
+        <b>웹 국기100문제</b>
+        <small>PC·태블릿</small>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/mobile-193.html?v=6">
-        <b>모바일 국기193문제</b><span class="muted">휴대폰 최적화</span>
+
+      <a class="card" href="./flags-193-mobile.html?v=7">
+        <span class="globe" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="1.2" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="7.8" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="16.2" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="1.2" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="7.8" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="16.2" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/></svg>
+        </span>
+        <b>모바일 국기193문제</b>
+        <small>휴대폰 최적화</small>
       </a>
-      <a class="card" href="https://xmoonsb.github.io/xm/web-193.html?v=6">
-        <b>웹 국기193문제</b><span class="muted">PC·태블릿</span>
+
+      <a class="card" href="./flags-193-web.html?v=7">
+        <span class="globe" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="1.2" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="7.8" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="16.2" rx="9" ry="1" stroke="#fff" stroke-width="2"/><ellipse cx="12" cy="12" rx="1.2" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="7.8" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/><ellipse cx="16.2" cy="12" rx="1" ry="9" stroke="#fff" stroke-width="2"/></svg>
+        </span>
+        <b>웹 국기193문제</b>
+        <small>PC·태블릿</small>
       </a>
     </div>
 
-    <div style="margin-top:18px;font-size:12px;color:#6b7280;">© 2025 밝음의근원 · MIT 라이선스 구성 요소 포함</div>
+    <footer>© 2025 밝음의근원 · 교육용 무료 배포</footer>
   </div>
-
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js?v=6").catch(() => {});
-    });
-  }
-</script>
 </body>
 </html>
