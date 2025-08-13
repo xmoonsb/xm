@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>세계 국기 맞추기 퀴즈 – 시작하기</title>
   <meta name="theme-color" content="#fbbf24" />
+
   <!-- 큰 가독성 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,11 +17,10 @@
       --bg2:#ffffff;
       --text:#0f172a;
       --muted:#475569;
-      --brand:#03C75A;
       --card:#ffffff;
       --shadow:0 10px 28px rgba(0,0,0,.06);
 
-      /* 카드 개별 색상(유아 친화 파스텔) */
+      /* 카드별 파스텔 */
       --c1:#fde68a;   /* 노랑 */
       --c2:#a7f3d0;   /* 민트 */
       --c3:#bfdbfe;   /* 하늘 */
@@ -31,7 +31,7 @@
     *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
     html,body{height:100%}
     body{
-      margin:0; padding:24px 16px max(24px, env(safe-area-inset-bottom));
+      margin:0; padding:28px 16px max(28px, env(safe-area-inset-bottom));
       display:flex; align-items:center; justify-content:center; text-align:center;
       background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 60%);
       color:var(--text);
@@ -39,56 +39,52 @@
       letter-spacing:.2px;
     }
 
-    .wrap{width:100%; max-width:860px}
+    .wrap{width:100%; max-width:900px}
 
     /* 헤더 */
     h1{
-      margin:0 0 8px;
-      font-size:clamp(34px, 9vw, 56px);  /* 아주 큰 타이틀 */
-      color:#f59e0b;                      /* 따뜻한 노랑 */
+      margin:0 0 10px;
+      font-size:clamp(36px, 10vw, 60px);
+      color:#f59e0b;
       text-shadow:0 2px 0 rgba(255,255,255,.9);
     }
     .subtitle{
-      margin:0 0 18px;
+      margin:0 0 20px;
       color:var(--muted);
-      font-size:clamp(16px, 4.8vw, 22px);
+      font-size:clamp(18px, 5vw, 24px);
     }
 
-    /* 버튼 그리드 */
+    /* 버튼 그리드: 유아 폴리시(큰 터치) */
     .grid{
-      display:grid; gap:18px;
-      grid-template-columns:repeat(1,minmax(0,1fr)); /* 한 줄씩: 큰 터치영역 */
+      display:grid; gap:20px;
+      grid-template-columns:1fr;          /* 모바일: 한 줄씩 */
       justify-items:center;
     }
-    @media (min-width:760px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (min-width:780px){ .grid{ grid-template-columns:1fr 1fr; } }
 
-    /* 카드 버튼 (유아 폴리시: 큰 터치, 둥근, 고대비, 액티브 피드백) */
     .card{
-      width:100%; max-width:720px; min-height:132px; /* 터치영역↑ */
-      padding:22px 18px;
-      border-radius:28px;
-      background:var(--card);
+      width:100%; max-width:760px; min-height:150px;
+      padding:26px 18px; border-radius:30px; background:var(--card);
       box-shadow:var(--shadow);
       text-decoration:none; color:var(--c-text);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-      border:6px solid transparent;     /* 색 보더는 각 카드에서 지정 */
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+      border:8px solid transparent;
       transition:transform .06s ease, box-shadow .12s ease;
       outline:none;
     }
     .card:active{ transform:scale(.98) }
-    .card:focus-visible{ box-shadow:0 0 0 6px rgba(59,130,246,.35); }
+    .card:focus-visible{ box-shadow:0 0 0 6px rgba(59,130,246,.35) }
 
-    /* 라벨 */
-    .card b{ font-size:clamp(22px, 6.2vw, 30px); line-height:1.12 }
-    .card small{ color:#334155; font-size:clamp(16px, 4.6vw, 20px) }
+    .card b{ font-size:clamp(26px, 7vw, 34px); line-height:1.12 }
+    .card small{ color:#334155; font-size:clamp(18px, 4.8vw, 22px) }
 
-    /* 카드 색상 변형 */
+    /* 카드 색상 */
     .c1{ border-color:var(--c1); background:color-mix(in srgb, var(--c1) 22%, white) }
     .c2{ border-color:var(--c2); background:color-mix(in srgb, var(--c2) 22%, white) }
     .c3{ border-color:var(--c3); background:color-mix(in srgb, var(--c3) 22%, white) }
     .c4{ border-color:var(--c4); background:color-mix(in srgb, var(--c4) 22%, white) }
 
-    /* color-mix 미지원 브라우저 대비(안전) */
+    /* color-mix 미지원 대비 */
     @supports not (background: color-mix(in srgb, red 50%, white)) {
       .c1{ background:#fff7cc }
       .c2{ background:#e6fff4 }
@@ -96,7 +92,7 @@
       .c4{ background:#ffeaf6 }
     }
 
-    footer{ margin-top:20px; color:#94a3b8; font-size:14px }
+    footer{ margin-top:22px; color:#94a3b8; font-size:14px }
     @media (prefers-reduced-motion: reduce){ .card{ transition:none } }
   </style>
 </head>
@@ -131,10 +127,10 @@
   </div>
 
 <script>
-  /* 서비스워커는 v7으로 이미 무간섭 설정됨. 캐시 갱신을 위해 쿼리만 올림 */
+  /* 최신 노출 보장: SW v8 (HTML은 네트워크 우선, 게임 본문 무간섭) */
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js?v=7").catch(()=>{});
+      navigator.serviceWorker.register("./service-worker.js?v=8").catch(()=>{});
     });
   }
 </script>
