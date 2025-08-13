@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>세계 국기 맞추기 퀴즈 · 100개국</title>
+  <meta name="theme-color" content="#0ea5e9"/>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', Arial, sans-serif;
+      text-align: center; padding: 16px; position: relative; margin: 0 auto; background: #fff;
+      max-width: 720px; padding-bottom: 200px;
+    }
+    h1, h2 { margin: 12px 0 8px; }
+    #scoreboard { position: sticky; top: 8px; float: right; font-size: 15px; color:#374151; background:#fff; padding:4px 8px; border-radius:8px; border:1px solid #e5e7eb; }
+    #mode-badge { position: sticky; top: 8px; float: left; font-size: 13px; padding: 4px 8px; border-radius: 999px; border: 1px solid #ef4444; color: #ef4444; display: none; background:#fff; }
+    #core { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; margin: 10px 0; }
+    #question { margin: 12px 0 8px; font-size: 21px; }
+    .country-name { color:#2563eb; }
+    #options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; justify-items: center; align-items: stretch; }
+    #options .option { width: 100%; display:flex; align-items:center; justify-content:center; position: relative; cursor: pointer; }
+    .flagbox { width: 100%; max-width: 360px; aspect-ratio: 4 / 3; border: 1px solid #e5e7eb; border-radius: 16px; display:flex; align-items:center; justify-content:center; background:#fff; box-shadow: 0 2px 8px rgba(0,0,0,.05); margin: 0 auto; overflow: hidden; }
+    .flagbox svg { width: 100%; height: 100%; display:block; }
+    #options .option.correct::after { content: ''; position: absolute; inset: -6px; border: 8px solid #22c55e; border-radius: 16px; pointer-events: none; box-sizing: border-box; }
+    #options .option.wrong::after { content: '✕'; position: absolute; inset: 0; display:flex; align-items:center; justify-content:center; font-size: 82px; color: #ef4444; font-weight: 900; line-height: 1; pointer-events: none; }
+    #nav-buttons { position: sticky; bottom: 16px; display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+    #nav-buttons button { padding: 10px 14px; font-size: 16px; border: 1px solid #111827; background: #fff; border-radius: 10px; cursor: pointer; }
+    #actions { margin-top: 18px; display:flex; gap:10px; justify-content:center; flex-wrap: wrap; }
+    #actions button { padding: 10px 14px; font-size: 16px; border: 1px solid #111827; background: #fff; border-radius: 10px; cursor: pointer; }
+    #hint { margin-top: 8px; font-size: 13px; color: #6b7280; min-height: 18px; }
+    @keyframes shk { 10%{ transform: translateX(-2px); } 20%{ transform: translateX(2px); } 30%{ transform: translateX(-2px); } 40%{ transform: translateX(2px); } 50%{ transform: translateX(-1px); } 60%{ transform: translateX(1px); } 100%{ transform: translateX(0); } }
+    .shk { animation: shk .35s ease-in-out; }
+
+    footer#signature { 
+      position: sticky; bottom: 0; margin-top: 40px; padding-top: 20px; 
+      color:#6b7280; font-size: 12px; 
+      display:flex; gap:10px; flex-wrap: wrap; align-items:center; justify-content:center;
+      background:#fff;
+    }
+    footer#signature .divider { width: 100%; height: 1px; background: linear-gradient(90deg,rgba(0,0,0,0), rgba(17,24,39,.15), rgba(0,0,0,0)); margin-bottom: 10px; }
+    .blog-link { display:inline-flex; align-items:center; gap:8px; color: inherit; text-decoration: none; padding: 6px 10px; border-radius: 999px; border: 1px dashed #9ca3af; background: #f9fafb; }
+    .blog-link:hover { background:#f3f4f6; }
+    .blog-link svg { width:16px; height:16px; }
+    .license { font-size: 11px; color:#9ca3af; }
+
+    /* Kids UI overrides */
+    :root{
+      --kids-bg: #f0f9ff;
+      --kids-card: #ffffff;
+      --kids-accent: #22c55e;
+      --kids-accent-2:#60a5fa;
+      --kids-text: #0f172a;
+      --kids-muted:#6b7280;
+      --kids-border:#dbeafe;
+      --kids-shadow: 0 6px 20px rgba(0,0,0,.08);
+    }
+    body{
+      background: linear-gradient(180deg, var(--kids-bg) 0%, #fff 40%);
+      font-family: "Jua","Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+      color: var(--kids-text);
+      letter-spacing: .2px;
+    }
+    h1{ font-size: clamp(24px, 4.5vw, 40px); margin-top: 8px; margin-bottom: 6px; color:#fbbf24;
+      text-shadow: 0 1px 0 rgba(255,255,255,.8);
+    }
+    #question{ font-size: clamp(28px, 2.6vw, 42px);
+      line-height: 1.35;
+      color:#0f172a;
+    }
+    .country-name{ 
+      color:#0ea5e9 !important; 
+      background: #e0f2fe; 
+      padding:.06em .4em; 
+      border-radius: .6em;
+    }
+    #options{
+      gap: clamp(14px, 3.2vw, 22px) !important;
+    }
+    #options .option{
+      border-radius: 22px;
+    }
+    .flagbox{
+      background: var(--kids-card) !important;
+      border: 3px solid var(--kids-border) !important;
+      border-radius: 24px !important;
+      box-shadow: var(--kids-shadow) !important;
+      max-width: min(420px, 92vw) !important;
+    }
+    .flagbox:focus-visible{ outline: 4px solid #fde68a; outline-offset: 3px; }
+    #options .option.correct::after{
+      inset: -8px !important;
+      border: 10px solid var(--kids-accent) !important;
+      border-radius: 26px !important;
+      box-shadow: 0 0 0 4px rgba(34,197,94,.12);
+    }
+    #options .option.wrong::after{ font-size: clamp(64px, 11vw, 96px) !important; }
+    #nav-buttons button, #actions button{
+      padding: clamp(12px, 2.6vw, 18px) clamp(16px, 4vw, 24px) !important;
+      font-size: clamp(18px, 3.8vw, 22px) !important;
+      font-weight: 700;
+      border-radius: 999px !important;
+      border: 0 !important;
+      background: linear-gradient(180deg, #fde68a, #fbbf24);
+      box-shadow: 0 8px 18px rgba(253, 216, 53, .35);
+      color:#3f3f46;
+      cursor: pointer;
+      transform: translateZ(0);
+      transition: transform .08s ease;
+    }
+    #nav-buttons button:active, #actions button:active{ transform: scale(.98); }
+    #start-review-btn{ background: linear-gradient(180deg, #86efac, #22c55e) !important; color:#064e3b !important; box-shadow: 0 8px 18px rgba(34, 197, 94, .28) !important; }
+    #restart-btn{ background: linear-gradient(180deg, #93c5fd, #3b82f6) !important; color:#0b3b7a !important; box-shadow: 0 8px 18px rgba(59, 130, 246, .28) !important; }
+    #prev-question-btn{ background: linear-gradient(180deg, #fecaca, #f87171) !important; color:#7a1020 !important; }
+    #next-question-btn{ background: linear-gradient(180deg, #bbf7d0, #34d399) !important; color:#0b4b3f !important; }
+    #scoreboard{
+      background: #fffbea !important;
+      color:#92400e !important;
+      border: 2px dashed #f59e0b !important;
+      border-radius: 999px !important;
+      font-size: clamp(16px, 3.4vw, 18px) !important;
+      padding: 6px 12px !important;
+    }
+    #hint{ font-weight: 700; color:#d97706; font-size: clamp(28px, 5vw, 36px); color:#334155 !important; min-height: 22px !important; }
+    button{ min-height: 48px; }
+    #options .option{ min-height: 140px; }
+    @media (max-width: 360px){ #options{ grid-template-columns: 1fr !important; } }
+    /* Disable long-press menu and text selection */
+    html, body, #options, .option, img, button { -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; }
+  
+    @keyframes blink-animation {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+    .blink {
+      animation: blink-animation 1s ease-in-out 2;
+    }
+
+
+/* --- Web 2-column layout --- */
+#options{
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 16px !important;
+  justify-items: center !important;
+}
+#options .option{ min-height: 220px !important; }
+.flagbox{ max-width: 640px !important; }
+body{ max-width: 1280px; }
+
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div id="mode-badge">오답 모드</div>
+    <div id="scoreboard"></div>
+  </div>
+  <h1>세계 국기 맞추기 퀴즈 · 100개국</h1>
+  <div id="quiz-container">
+    <div id="core">
+      <h2 id="question"></h2>
+      <div id="options"></div>
+      <div id="hint" aria-live="polite"></div>
+    </div>
+
+    <div id="nav-buttons">
+      <button id="prev-question-btn">◀ 뒤로</button>
+      <button id="next-question-btn">다음 ▶</button>
+    </div>
+
+    <div id="actions">
+      <button id="start-review-btn">틀린 문제 복습</button>
+      <button id="restart-btn">처음부터 시작</button>
+    </div>
+
+    <footer id="signature" role="contentinfo" aria-label="저작권 및 출처">
+      <div class="divider"></div>
+      <span>© 2025 밝음의근원</span>
+      <span>·</span>
+      <a class="blog-link" href="https://m.blog.naver.com/xmoonsb" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="#03C75A"/><path d="M9 8h2.8l3.2 4.2V8H18v8h-2.8L12 11.8V16H9V8z" fill="#fff"/></svg>
+        <span>네이버 블로그: 밝음의 근원</span>
+      </a>
+      <div class="license">본 게임은 비상업적 목적 배포. Flags © <a href="https://github.com/lipis/flag-icons" target="_blank" rel="noopener">flag-icons</a> (MIT). SVG는 CDN에서 로드되며 최초 실행 후 오프라인 캐시됩니다.</div>
+    </footer>
+  </div>
+
+<script>
+// 193 UN member states (ISO 3166-1 alpha-2, lowercase)
+const CODES = [
+"af",
+"al",
+"dz",
+"ad",
+"ao",
+"ag",
+"ar",
+"am",
+"au",
+"at",
+"az",
+"bs",
+"bh",
+"bd",
+"bb",
+"by",
+"be",
+"bz",
+"bj",
+"bt",
+"bo",
+"ba",
+"bw",
+"br",
+"bn",
+"bg",
+"bf",
+"bi",
+"cv",
+"kh",
+"cm",
+"ca",
+"cf",
+"td",
+"cl",
+"cn",
+"co",
+"km",
+"cg",
+"cd",
+"cr",
+"ci",
+"hr",
+"cu",
+"cy",
+"cz",
+"dk",
+"dj",
+"dm",
+"do",
+"ec",
+"eg",
+"sv",
+"gq",
+"er",
+"ee",
+"et",
+"fj",
+"fi",
+"fr",
+"ga",
+"gm",
+"ge",
+"de",
+"gh",
+"gr",
+"gd",
+"gt",
+"gn",
+"gw",
+"gy",
+"ht",
+"hn",
+"hu",
+"is",
+"in",
+"id",
+"ir",
+"iq",
+"ie",
+"il",
+"it",
+"jm",
+"jp",
+"jo",
+"kz",
+"ke",
+"ki",
+"kw",
+"kg",
+"la",
+"lv",
+"lb",
+"ls",
+"lr",
+"ly",
+"li",
+"lt",
+"lu",
+"mg"
+];
+
+// Build a name map using Intl for Korean region names
+const regionNames = new Intl.DisplayNames(['ko'], { type: 'region' });
+const NAME = {}; CODES.forEach(c => NAME[c.toUpperCase()] = regionNames.of(c.toUpperCase()));
+
+// Shuffle helper
+const shuffle = (a) => { for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+// State
+let order = shuffle([...CODES]); // random order of questions
+let idx = 0;
+let scoredSet = new Set();
+let score = 0;
+let wrongSet = new Set();
+let reviewMode = false;
+let madeWrongAttempt = false; // this question: did user click any wrong option?
+
+const qEl = document.getElementById('question');
+const optEl = document.getElementById('options');
+const scoreEl = document.getElementById('scoreboard');
+const hintEl = document.getElementById('hint');
+const modeBadge = document.getElementById('mode-badge');
+
+function updateScore(){
+  scoreEl.textContent = `단계 ${idx+1}/${order.length} · 점수 ${score}`;
+}
+
+function flagEmoji(cc){
+  // Fallback: Regional Indicator Symbols
+  const A = 0x1F1E6;
+  const upper = cc.toUpperCase();
+  return String.fromCodePoint(A + (upper.charCodeAt(0)-65)) + String.fromCodePoint(A + (upper.charCodeAt(1)-65));
+}
+
+async function loadFlagSVG(cc){
+  const url = `https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/${cc}.svg`;
+  try{
+    const res = await fetch(url, { cache: 'default' });
+    if(!res.ok) throw new Error('not ok');
+    return await res.text();
+  }catch(e){
+    // emoji fallback wrapped in SVG for sizing
+    const em = flagEmoji(cc);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90"><rect width="120" height="90" fill="#fff"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="56">${em}</text></svg>`;
+  }
+}
+
+async function renderQuestion(){
+  madeWrongAttempt = false;
+  updateScore();
+  const cc = order[idx];
+  const name = NAME[cc.toUpperCase()] || cc.toUpperCase();
+  qEl.innerHTML = `<span class="country-name">${name}</span>의 국기는 어느 것일까요?`;
+
+  // Build options: correct + 3 random wrongs
+  const others = shuffle(CODES.filter(c => c!==cc)).slice(0,3);
+  const choices = shuffle([cc, ...others]);
+
+  optEl.innerHTML = '';
+  hintEl.textContent = '';
+
+  // Preload all 4 flags
+  const svgs = await Promise.all(choices.map(loadFlagSVG));
+
+  choices.forEach((code, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.setAttribute('role','button');
+    btn.setAttribute('tabindex','0');
+    btn.innerHTML = `<div class="flagbox" aria-label="국기 보기">${svgs[i]}</div>`;
+    btn.addEventListener('click', () => select(code===cc, btn, cc));
+    btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ select(code===cc, btn, cc); }});
+    optEl.appendChild(btn);
+  });
+}
+
+function select(correct, el, cc){
+  if(el.classList.contains('correct') || el.classList.contains('wrong')) return;
+  if(correct){
+    el.classList.add('correct');
+    if(!madeWrongAttempt && !scoredSet.has(cc)) { score++; scoredSet.add(cc); }
+    hintEl.textContent = '정답! 😄⭕';
+    hintEl.classList.add('blink');
+    setTimeout(()=>hintEl.classList.remove('blink'), 2000);
+    updateScore();
+    // Auto-advance to next question shortly after correct selection
+    setTimeout(()=>{
+      document.getElementById('next-question-btn').click();
+    }, 500);
+  }else{
+    el.classList.add('wrong');
+    wrongSet.add(cc);
+    madeWrongAttempt = true;
+    hintEl.textContent = '틀렸어요 😢❌';
+    hintEl.classList.add('blink');
+    setTimeout(()=>hintEl.classList.remove('blink'), 2000);
+    optEl.classList.add('shk'); setTimeout(()=>optEl.classList.remove('shk'), 350);
+    updateScore();
+  }
+}
+
+document.getElementById('next-question-btn').addEventListener('click', () => {
+  idx++;
+  if(idx >= order.length){
+    if(reviewMode){
+      // end
+      alert('복습이 끝났습니다! 처음부터 다시 시작합니다.');
+      restart();
+    }else{
+      alert('모든 문제를 풀었습니다! 오답 복습으로 이어가 보세요.');
+      idx = order.length - 1;
+    }
+  }else{
+    renderQuestion();
+  }
+});
+
+document.getElementById('prev-question-btn').addEventListener('click', () => {
+  if(idx>0){ idx--; renderQuestion(); }
+});
+
+document.getElementById('restart-btn').addEventListener('click', restart);
+document.getElementById('start-review-btn').addEventListener('click', () => {
+  if(wrongSet.size === 0){
+    alert('오답이 없습니다!');
+    return;
+  }
+  reviewMode = true;
+  modeBadge.style.display = 'inline-flex';
+  order = shuffle([...wrongSet]);
+  wrongSet.clear();
+  idx = 0; score = 0;
+  renderQuestion();
+});
+
+function restart(){
+  reviewMode = false;
+  scoredSet.clear();
+  modeBadge.style.display = 'none';
+  order = shuffle([...CODES]);
+  idx = 0; score = 0; wrongSet.clear();
+  renderQuestion();
+}
+
+// Initialize
+renderQuestion();
+updateScore();
+
+// Service worker for offline caching of this page & fetched SVGs
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw-flags.js').catch(()=>{});
+  });
+}
+</script>
+
+<!-- Minimal service worker (separate file) -->
+<script id="sw-inline" type="text/plain">
+// sw-flags.js
+const CACHE = 'flag-quiz-v1';
+self.addEventListener('install', (e)=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./', './index.html'].map(u=>new Request(u,{cache:'reload'}))).catch(()=>{})));
+  self.skipWaiting();
+});
+self.addEventListener('activate', (e)=>{ e.waitUntil(self.clients.claim()); });
+self.addEventListener('fetch', (e)=>{
+  const url = new URL(e.request.url);
+  // Cache flag SVGs from jsDelivr and same-origin HTML
+  if(url.origin === location.origin || url.hostname.includes('jsdelivr.net')){
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(e.request);
+      if(cached) return cached;
+      try{
+        const res = await fetch(e.request, { cache: 'no-cache' });
+        if(res.ok) cache.put(e.request, res.clone());
+        return res;
+      }catch(err){
+        return cached || Response.error();
+      }
+    })());
+  }
+});
+</script>
+
+<script>
+// Write the service worker file from the inline <script> so hosting a single HTML works.
+(async () => {
+  try{
+    const swBlob = new Blob([document.getElementById('sw-inline').textContent], { type: 'text/javascript' });
+    const swUrl = URL.createObjectURL(swBlob);
+    // Fetch and store as sw-flags.js via Cache API so SW can install it
+    if('caches' in window){
+      const cache = await caches.open('flag-quiz-v1');
+      await cache.put('sw-flags.js', new Response(await (await fetch(swUrl)).blob(), {headers:{'Content-Type':'text/javascript'}}));
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>
